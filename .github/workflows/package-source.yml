@@ -1,0 +1,29 @@
+name: Package Multi-Photo Human 3D
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "app.py"
+      - ".github/workflows/package-source.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+      - name: Validate Python syntax
+        run: python -m py_compile app.py
+      - name: Create self-contained source ZIP
+        run: zip -j multiview_human_3d_reference.zip app.py
+      - name: Upload ZIP artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: multiview-human-3d-source
+          path: multiview_human_3d_reference.zip
+          if-no-files-found: error
+          retention-days: 30
